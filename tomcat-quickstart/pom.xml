@@ -24,6 +24,11 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.22</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -55,6 +60,7 @@
                 <configuration>
                     <username>tomcat</username>
                     <password>tomcat</password>
+
                 </configuration>
             </plugin>
         </plugins>
