@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -27,27 +28,39 @@ public class ProductServlet extends HttpServlet {
         super.init(config);
         try {
             daoFactory = DaoFactory.getInstance(DatabaseName.MYSQL);
-        }catch (ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
             throw new ServletException(e);
         }
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp){
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            PrintWriter writer = resp.getWriter();
-
+            String id = req.getParameter("id");
+            final List<ProductSpec> productSpecs;
             ProductSpecDao productSpecDao = daoFactory.getProductSpecDao();
-            final List<ProductSpec> productSpecs = productSpecDao.readAll();
-            for (ProductSpec product: productSpecs){
+            if (id == null) {
+                productSpecs = productSpecDao.readAll();
+            } else {
+                ProductSpec productSpec= null;
+                try {
+                    productSpec = productSpecDao.read(Integer.parseInt(id));
+                }catch (NumberFormatException e){
+                    e.printStackTrace();
+                }
 
-                System.out.println("id="+product.getId()+
-                        " name="+ product.getProductName()+
-                        " details="+product.getProductDetails());
-                writer.println("id="+product.getId()+
-                        " name="+ product.getProductName()+
-                        " details="+product.getProductDetails()+
-                        " date"+ product.getProductDate());
+                productSpecs = productSpec != null ? List.of(productSpec) : Collections.emptyList();
+            }
+
+            PrintWriter writer = resp.getWriter();
+            for (ProductSpec product : productSpecs) {
+                System.out.println("id=" + product.getId() +
+                        " name=" + product.getProductName() +
+                        " details=" + product.getProductDetails());
+                writer.println("id=" + product.getId() +
+                        " name=" + product.getProductName() +
+                        " details=" + product.getProductDetails() +
+                        " date" + product.getProductDate());
             }
 
 

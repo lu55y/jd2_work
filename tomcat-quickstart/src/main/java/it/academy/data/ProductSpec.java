@@ -1,7 +1,7 @@
 package it.academy.data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 import java.util.Objects;
 
 public class ProductSpec  implements Serializable {
