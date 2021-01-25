@@ -34,10 +34,18 @@ public class PersonTest {
     public void create(){
         //Given
         Person person=new Person();
-        person.setId(1L);
         person.setName("Natalia");
         person.setSecondName("Ivanova");
         person.setDateOfBirth(Date.valueOf("1980-01-01"));
+        person.setStatus(Person.Status.NEW);
+        person.setComments(new String[]{"Comment1","Comment2"});
+
+        ShopUser shopUser=new ShopUser();
+        shopUser.setUserName("n_ivanova");
+        shopUser.setPassword("secret");
+
+        person.setShopUser(shopUser);
+
 
         //When
         Session session=factory.openSession();
@@ -46,6 +54,7 @@ public class PersonTest {
         try {
             tx = session.beginTransaction();
             //do some work
+            session.save(shopUser);
             id=session.save(person);
             tx.commit();
         } catch (Exception e) {
@@ -60,6 +69,7 @@ public class PersonTest {
 
 
     }
+
     public void delete(){
 //        given
         Session session=factory.openSession();

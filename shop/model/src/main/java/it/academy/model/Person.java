@@ -1,16 +1,25 @@
 package it.academy.model;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
+@AllArgsConstructor
+@Data
+@NoArgsConstructor
 @Entity
 public class Person {
 
     @Id
-    private Long id;
+    @GeneratedValue(generator = "uuid-generator")
+    @GenericGenerator(name = "uuid-generator", strategy = "uuid")
+    private String personID;
 
     private String name;
 
@@ -18,60 +27,21 @@ public class Person {
 
     private Date dateOfBirth;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @ElementCollection
+    @OrderColumn(name = "C_ORDER")
+    private String[] comments;
+
+    @OneToOne
+    @JoinColumn(name = "SHOP_USER_ID")
+    private ShopUser shopUser;
 
 
-    public Long getId() {
-        return id;
+
+    enum Status{
+        NEW, UPDATED, DELETED
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return Objects.equals(id, person.id) && Objects.equals(name, person.name) && Objects.equals(secondName, person.secondName) && Objects.equals(dateOfBirth, person.dateOfBirth);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, secondName, dateOfBirth);
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", secondName='" + secondName + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                '}';
-    }
 }
