@@ -1,6 +1,7 @@
 package it.academy.model;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,9 +13,9 @@ import javax.persistence.*;
 public class ShopUser {
 
     @Id
+    @Column(name = "SHOP_USER_ID")
     @GeneratedValue(generator = "uuid-generator")
     @GenericGenerator(name = "uuid-generator", strategy = "uuid")
-    @Column(name = "SHOP_USER_ID")
     private String shopUserId;
 
     @Column(name = "USER_NAME")
@@ -22,4 +23,5 @@ public class ShopUser {
 
     @Column(name = "PASSWORD")
     private String password;
+
 }

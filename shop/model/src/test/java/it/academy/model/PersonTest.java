@@ -1,81 +1,62 @@
 package it.academy.model;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
-@FixMethodOrder
-public class PersonTest {
-
-    private SessionFactory factory;
-    @org.junit.Before
-    public void setUp() {
-        StandardServiceRegistry registry =new StandardServiceRegistryBuilder()
-                .configure("hibernate.cfg.test.xml")
-                .build();
-        factory=new MetadataSources(registry)
-                .buildMetadata()
-                .buildSessionFactory();
-    }
+public class PersonTest extends BaseTest {
 
     @Test
-    public void create(){
+    public void create() {
         //Given
-        Person person=new Person();
+        Person person = new Person();
         person.setName("Natalia");
         person.setSecondName("Ivanova");
         person.setDateOfBirth(Date.valueOf("1980-01-01"));
-        person.setStatus(Person.Status.NEW);
-        person.setComments(new String[]{"Comment1","Comment2"});
+        person.setStatus(Status.UPDATED);
+        person.setComments(new String[]{"Comment1", "Comment2"});
 
-        ShopUser shopUser=new ShopUser();
+        ShopUser shopUser = new ShopUser();
         shopUser.setUserName("n_ivanova");
         shopUser.setPassword("secret");
 
         person.setShopUser(shopUser);
 
-
         //When
-        Session session=factory.openSession();
-        Serializable id = null;
-        Transaction tx=null;
+        Session session = factory.openSession();
+        Transaction tx = null;
+        Serializable id;
         try {
             tx = session.beginTransaction();
             //do some work
+            id = session.save(person);
             session.save(shopUser);
-            id=session.save(person);
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             throw e;
-        } finally {
-            session.close();
         }
 
         //Then
         assertNotNull(id);
-
-
     }
 
-    public void delete(){
-//        given
-        Session session=factory.openSession();
-        Person person=session.get(Person.class,1L);
-//        when
-        Transaction tx=null;
+    @Test
+    public void delete() {
+        //Given:
+        cleanInsert("PersonTest.xml");
+        String uuid = "2c968187773a55a101773a55a3a10000";
+
+        //When:
+        Session session = factory.openSession();
+        Person person = session.get(Person.class, uuid);
+        Transaction tx = null;
         try {
             tx = session.beginTransaction();
             //do some work
@@ -85,11 +66,27 @@ public class PersonTest {
             if (tx != null) tx.rollback();
             throw e;
         }
-        //then
-        assertNull(session.get(Person.class,1L));
+
+        // Then:
+        assertNull(session.get(Person.class, uuid));
         session.close();
+        deleteDataset();
     }
-    @org.junit.After
-    public void tearDown() throws Exception {
+
+    @Test
+    public void query() {
+        //Given:
+        cleanInsert("PersonTest.xml");
+
+        //When:
+        Session session = factory.openSession();
+        List<Person> persons = session
+                .createQuery("from Person where secondName like 'Ivan%'", Person.class)
+                .list();
+
+        //Then:
+        assertEquals(1, persons.size());
+        deleteDataset();
     }
+
 }

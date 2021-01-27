@@ -1,14 +1,7 @@
 package it.academy.model;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 
 import java.io.Serializable;
@@ -16,66 +9,106 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-@FixMethodOrder
-public class ProductTest {
-
-    private SessionFactory factory;
-    @Before
-    public void setUp() throws Exception {
-        StandardServiceRegistry registry =new StandardServiceRegistryBuilder()
-                .configure("hibernate.cfg.test.xml")
-                .build();
-        factory=new MetadataSources(registry)
-                .buildMetadata()
-                .buildSessionFactory();
-
-    }
+public class ProductTest extends BaseTest {
 
     @Test
-    public void create(){
-//        given
-        Product product=new Product();
+    public void create() {
+        //Given
+        Product product = new Product();
         product.setProductName("Apple iPhone");
         product.setDescription("iPhone 12 512GB");
 
-        ProductPrice productPrice1=new ProductPrice();
+        ProductPrice productPrice1 = new ProductPrice();
         productPrice1.setProduct(product);
         productPrice1.setPriceValue(BigDecimal.valueOf(5990.99));
-        productPrice1.setCurrency(ProductPrice.Currency.BYN);
+        productPrice1.setCurrency(Currency.BYN);
 
-        ProductPrice productPrice2=new ProductPrice();
+        ProductPrice productPrice2 = new ProductPrice();
         productPrice2.setProduct(product);
         productPrice2.setPriceValue(BigDecimal.valueOf(2000.22));
-        productPrice2.setCurrency(ProductPrice.Currency.USD);
+        productPrice2.setCurrency(Currency.EUR);
 
-        List<ProductPrice> prices =new ArrayList<>();
+        List<ProductPrice> prices = new ArrayList<>(2);
         prices.add(productPrice1);
         prices.add(productPrice2);
-        product.setProductPrice(prices);
+        product.setProductPrices(prices);
 
         //When
-        Session session=factory.openSession();
-        Serializable id = null;
-        Transaction tx=null;
+        Session session = factory.openSession();
+        Transaction tx = null;
+        Serializable id;
         try {
             tx = session.beginTransaction();
             //do some work
+            id = session.save(product);
             session.save(productPrice1);
             session.save(productPrice2);
-            id=session.save(product);
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             throw e;
-        } finally {
-            session.close();
         }
 
         //Then
-//        assertNotNull(id);
-
+        assertNotNull(id);
     }
 
+    @Test
+    public void read() {
+        //Given
+        cleanInsert("ProductTest.xml");
+
+
+        //When
+        Session session = factory.openSession();
+        List<Product> products = session
+                .createQuery("from Product", Product.class)
+                .list();
+
+
+        //Then
+        assertNotNull(products);
+        assertEquals(3, products.size());
+        List<ProductPrice> prices = products.stream()
+                .filter(product -> "2c931081773acfd101773acfd4180002"
+                        .equals(product.getProductId()))
+                .map(Product::getProductPrices)
+                .findFirst()
+                .orElse(null);
+        assertNotNull(prices);
+        assertEquals(1, prices.size());
+        deleteDataset();
+        session.close();
+    }
+
+    @Test
+    public void delete() {
+        //Given
+        cleanInsert("ProductTest.xml");
+        Session session = factory.openSession();
+        Transaction transaction = session.beginTransaction();
+        List<Product> products = session
+                .createQuery("from Product", Product.class)
+                .list();
+        List<ProductPrice> prices = session
+                .createQuery("from ProductPrice", ProductPrice.class)
+                .list();
+
+        //When
+        prices.forEach(session::delete);
+        products.forEach(session::delete);
+        transaction.commit();
+
+        //Then
+        assertEquals(0,
+                session.createQuery("from Product p")
+                        .list()
+                        .size()
+        );
+        session.close();
+
+    }
 }
