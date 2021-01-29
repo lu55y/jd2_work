@@ -89,4 +89,41 @@ public class PersonTest extends BaseTest {
         deleteDataset();
     }
 
+    @Test
+    public void queryShopUser() {
+        //Given
+        cleanInsert("PersonShopUserTest.xml");
+        final List<ShopUser> list = factory.openSession()
+                .createQuery("select p.shopUser from Person AS p", ShopUser.class)
+                .list();
+        //When
+        assertNotNull(list);
+        assertEquals(3, list.size());
+
+    }
+
+    @Test
+    public void copy() {
+        //given
+        cleanInsert("PersonTest.xml");
+        //when
+        Session session = factory.openSession();
+        final Transaction transaction = session.beginTransaction();
+        final int count = session.createQuery(
+                "insert into Person (personId, name, secondName, dateOfBirth, status) " +
+                        "select '2c968187773a55a101773a55a3a10001', name, secondName, dateOfBirth, status " +
+                        "from Person where personId=:personId")
+                .setParameter("personId", "2c968187773a55a101773a55a3a10000")
+                .executeUpdate();
+        transaction.commit();
+
+        //then
+        assertEquals(1, count);
+        assertEquals((Long)2l, session.createQuery("select count(personId) from Person",Long.class)
+                .list()
+                .get(0)
+        );
+        session.close();
+    }
+
 }
