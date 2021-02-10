@@ -51,11 +51,11 @@ public class PromoService {
     }
 
     public List<Promo> findAllPromo() {
-        return promoDao.findAllPromo().stream()
+        return promoDao.findAllPromo();/*.stream()
                 .map(promo -> {
                     promo.setDescription("New promo");
                     return promo;
-                }).collect(Collectors.toList());
+                }).collect(Collectors.toList());*/
     }
 
 }

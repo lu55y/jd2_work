@@ -24,9 +24,13 @@ public class PromoServiceTest {
     public void findAllPromo() {
         //Given
         PromoDaoImpl promoDaoMock = Mockito.mock(PromoDaoImpl.class);
+        Promo promo=new Promo();
+        promo.setDescription("Promo1");
+
         Mockito
                 .when(promoDaoMock.findAllPromo())
-                .thenReturn(List.of(new Promo(),new Promo()));
+                .thenReturn(List.of(promo,promo));
+//                .thenReturn(List.of(new Promo(),new Promo()));
         promoService.setPromoDao(promoDaoMock);
 
 
@@ -36,6 +40,6 @@ public class PromoServiceTest {
         //Then
         assertNotNull(allPromo);
         assertEquals(2,allPromo.size());
-        assertEquals("New promo",allPromo.get(0).getDescription());
+        assertEquals("Promo1",allPromo.get(0).getDescription());
     }
 }
