@@ -3,18 +3,17 @@ package it.academy.dao;
 import it.academy.model.Product;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
 
-    private static List<Product> products=List.of(
-        Product.builder()
-                .productId("1")
-                .productName("Apple iPhone 12")
-                .description("256 Gb white")
-                .build(),
+    private static List<Product> products = List.of(
+            Product.builder()
+                    .productId("1")
+                    .productName("Apple iPhone 12")
+                    .description("256 Gb white")
+                    .build(),
             Product.builder()
                     .productId("2")
                     .productName("Apple Ipad")
@@ -25,11 +24,32 @@ public class ProductDaoImpl implements ProductDao {
                     .productName("Samsung Galaxy X")
                     .description("64 Gb Gray Space")
                     .build()
-            );
+    );
 
 
     @Override
     public List<Product> findAllProducts() {
         return products;
+    }
+
+    @Override
+    public Product read(String id) {
+        return products.stream()
+                .filter(product -> product.getProductId().equals(id))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    @Override
+    public String save(Product product) {
+        int maxId=products.stream()
+                .max((o1, o2) -> Integer.valueOf(o1.getProductId())-Integer.valueOf(o2.getProductId()))
+                .map(product1 -> Integer.valueOf(product1.getProductId()))
+                .get();
+        String productId =String.valueOf(++maxId);
+        product.setProductId(productId);
+        products=new ArrayList<>(products);
+        products.add(product);
+        return productId;
     }
 }

@@ -14,24 +14,14 @@ import java.util.logging.Logger;
 @Controller
 public class HomeController {
 
-    private static final Logger log=Logger.getLogger(HomeController.class.getName());
-
-    @Autowired
-    SearchService searchService;
+    private static final Logger log = Logger.getLogger(HomeController.class.getName());
 
     @Autowired
     PromoService promoService;
 
-//    @RequestMapping(path = "/", method = RequestMethod.GET)
+    //    @RequestMapping(path = "/", method = RequestMethod.GET)
     @GetMapping(path = "/")
-    public String home(@RequestParam(value = "searchParam",required = false) String param,
-                             Model model){
-        if (param!=null&& !"".equals(param.trim())){
-            model.addAttribute("searchResult", searchService.searchProducts(param));
-            return "search-result";
-        }
-
-        log.info("Calling home(): searchParam: "+ param);
+    public String home(Model model) {
         model.addAttribute("promoList", promoService.findAllPromo());
         return "index";
     }
