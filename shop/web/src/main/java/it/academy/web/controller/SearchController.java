@@ -13,17 +13,20 @@ import java.util.logging.Logger;
 @Controller
 public class SearchController {
 
-    private static final Logger log = Logger.getLogger(SearchController.class.getName());
+    private static final Logger log =
+            Logger.getLogger(SearchController.class.getName());
 
     @Autowired
     SearchService searchService;
 
     @GetMapping("/search")
-    public String search(@RequestParam(value = "searchParam",required = false) String param, Model model){
-
-        log.info("Calling home(): searchParam: "+ param);
-        if (param!=null&& !"".equals(param.trim())){
+    public String search(
+            @RequestParam(value = "searchParam", required = false) String param,
+            Model model) {
+        log.info("Calling search(): searchParam: " + param);
+        if (param != null && !"".equals(param.trim())) {
             model.addAttribute("searchResult", searchService.searchProducts(param));
+
         }
         return "search-result";
     }

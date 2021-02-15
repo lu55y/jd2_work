@@ -14,14 +14,16 @@ import java.util.logging.Logger;
 @Controller
 public class HomeController {
 
+
     private static final Logger log = Logger.getLogger(HomeController.class.getName());
 
     @Autowired
     PromoService promoService;
 
-    //    @RequestMapping(path = "/", method = RequestMethod.GET)
-    @GetMapping(path = "/")
-    public String home(Model model) {
+    @GetMapping("/")
+    public String home(
+            Model model
+    ) {
         model.addAttribute("promoList", promoService.findAllPromo());
         return "index";
     }

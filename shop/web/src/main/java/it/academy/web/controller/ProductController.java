@@ -17,22 +17,22 @@ import java.util.logging.Logger;
 @Controller
 public class ProductController {
 
-    private static final Logger log = Logger.getLogger(ProductController.class.getName());
+    public static final Logger log =
+            Logger.getLogger(ProductController.class.getName());
 
     @Autowired
-    private ProductService productService;
+    ProductService productService;
 
     @GetMapping("/product")
     public String addProduct() {
         return "add-product";
     }
 
-
     @GetMapping("/product/{id}")
     public String getProduct(
             @PathVariable(name = "id") String id,
-            Model model) {
-
+            Model model
+    ) {
         try {
             model.addAttribute("product", productService.findProductById(id));
             return "product";
@@ -47,9 +47,10 @@ public class ProductController {
     public String addProduct(
             @ModelAttribute Product product
     ) {
-        log.info(String.format("New product:%s", product));
+        log.info(String.format("New product: %s", product));
+
         String productId = productService.saveNewProduct(product);
+
         return String.format("redirect:/product/%s", productId);
     }
-
 }
