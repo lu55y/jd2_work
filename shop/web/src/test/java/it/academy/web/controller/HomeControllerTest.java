@@ -57,6 +57,7 @@ public class HomeControllerTest {
                         .params(map))
                 .andReturn().getModelAndView();
 
-        System.out.println(modelAndView.getViewName());
+        assertNotNull(modelAndView);
+        assertTrue(modelAndView.getViewName().contains("redirect:/product"));
     }
 }
