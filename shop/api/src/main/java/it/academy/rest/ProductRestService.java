@@ -18,7 +18,7 @@ public class ProductRestService {
     ProductService productService;
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<Product> readProduct(String id){
+    public ResponseEntity<Product> readProduct(@PathVariable String id){
         Product product = productService.findProductById(id);
         if (product==null){
             return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -39,14 +39,15 @@ public class ProductRestService {
 //        return new ResponseEntity<>(product,HttpStatus.OK);
 //    }
 
-    @PostMapping("/products")
-    public ResponseEntity<Product> createProduct (Product product){
+    @PostMapping(value = "/products", consumes = "application/json")
+    public ResponseEntity<Product> createProduct (@RequestBody Product product){
         productService.saveNewProduct(product);
         return new ResponseEntity<>(product,HttpStatus.CREATED);
     }
 
     @PutMapping("/products/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable String id, Product product){
+    public ResponseEntity<Product> updateProduct(@PathVariable String id,
+                                                 @RequestBody Product product){
         return new ResponseEntity<>(product,HttpStatus.OK);
     }
 
