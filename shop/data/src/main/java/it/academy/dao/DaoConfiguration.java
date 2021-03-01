@@ -43,7 +43,7 @@ public class DaoConfiguration {
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setAnnotatedClasses(
-                Person.class, Product.class, ProductPrice.class, Promo.class, ShopUser.class
+                VisitorCount.class,Person.class, Product.class, ProductPrice.class, Promo.class, ShopUser.class
         );
         Properties properties = new Properties();
         properties.setProperty("hibernate.show_sql", "true");
