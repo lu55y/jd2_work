@@ -7,16 +7,14 @@ import lombok.Value;
 
 import javax.persistence.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "T_VISITOR_COUNT")
+@Data
 public class VisitorCount {
 
     @Id
     private Integer id;
-    @Column(name = "visitor_count")
-    private Integer count;
 
+    @Column
+    private Integer count;
 }

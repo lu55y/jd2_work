@@ -12,4 +12,5 @@ public interface ProductDao {
 
     String save(Product product);
 
+    int getProductCount();
 }

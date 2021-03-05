@@ -4,7 +4,7 @@ import it.academy.model.VisitorCount;
 
 public interface VisitorCountDao {
 
-    VisitorCount read(int id);
+    VisitorCount readCount(int id);
 
-    Integer update(VisitorCount visitorCount);
+    int updateCount(VisitorCount visitorCount);
 }

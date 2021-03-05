@@ -17,17 +17,17 @@ public class VisitorCountDaoImpl implements VisitorCountDao {
         this.sessionFactory = sessionFactory;
     }
 
-
     @Override
-    public VisitorCount read(int id) {
-        return sessionFactory.openSession()
-                .get(VisitorCount.class, id);
+    public VisitorCount readCount(int id) {
+        final Session currentSession = sessionFactory.getCurrentSession();
+        VisitorCount visitorCount =
+                currentSession.get(VisitorCount.class, id);
+        return visitorCount;
     }
 
     @Override
-    public Integer update(VisitorCount visitorCount) {
-        Session session= sessionFactory.getCurrentSession();
-        session.update(visitorCount);
-        return 0;
+    public int updateCount(VisitorCount visitorCount) {
+        sessionFactory.getCurrentSession().saveOrUpdate(visitorCount);
+        return visitorCount.getCount();
     }
 }

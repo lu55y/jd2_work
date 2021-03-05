@@ -13,7 +13,8 @@ import java.util.*;
 public class ProductDaoImpl implements ProductDao {
 
     private SessionFactory sessionFactory;
-    private Session session;
+
+
 
     @Autowired
     public ProductDaoImpl(SessionFactory sessionFactory) {
@@ -38,5 +39,14 @@ public class ProductDaoImpl implements ProductDao {
         Session session =sessionFactory.getCurrentSession();
         String id=(String) session.save(product);
         return id;
+    }
+
+    @Override
+    public int getProductCount() {
+        long productCount = sessionFactory.getCurrentSession()
+                .createQuery("select count(p.productId) from Product p",Long.class)
+                .list()
+                .get(0);
+        return (int) productCount;
     }
 }

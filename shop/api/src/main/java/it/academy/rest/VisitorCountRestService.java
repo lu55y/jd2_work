@@ -1,6 +1,5 @@
 package it.academy.rest;
 
-import it.academy.model.VisitorCount;
 import it.academy.service.VisitorCountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +12,14 @@ public class VisitorCountRestService {
     @Autowired
     private VisitorCountService visitorCountService;
 
-    @GetMapping("/visitor_count")
-    public VisitorCount readCount(int id){
-        return null;
+    @PutMapping("/visitor_count")
+    public Integer updateVisitorCount() {
+        return visitorCountService.updateCount();
     }
 
-    @PutMapping("/visitor_count")
-    public VisitorCount updateCount(int id){
-        return null;
+    @GetMapping("/visitor_count")
+    public Integer readVisitorCount() {
+        return visitorCountService.readCount();
     }
 
 }

@@ -1,7 +1,9 @@
 package it.academy.service;
 
 
+import it.academy.dao.ProductDao;
 import it.academy.dao.PromoDao;
+import it.academy.dto.PromoAndProductDto;
 import it.academy.model.Promo;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +30,9 @@ public class PromoService {
     @Autowired
     @Qualifier("promoDaoImpl")
     private PromoDao promoDao;
+
+    @Autowired
+    private ProductDao productDao;
 
     public void init() {
         System.out.println("Call init()");
@@ -58,4 +63,14 @@ public class PromoService {
                 }).collect(Collectors.toList());*/
     }
 
+    public PromoAndProductDto findPromoAndProduct() {
+        PromoAndProductDto dto = new PromoAndProductDto();
+        int promoCount = promoDao.getPromoCount();
+        int productCount= productDao.getProductCount();
+
+        dto.setPromoCont(promoCount);
+        dto.setProductCont(productCount);
+
+        return dto;
+    }
 }
