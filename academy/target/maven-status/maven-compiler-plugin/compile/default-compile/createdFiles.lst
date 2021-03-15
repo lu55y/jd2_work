@@ -1,0 +1,6 @@
+it\data\jpa\service\HotelRepository.class
+it\data\jpa\domain\City.class
+it\data\jpa\service\CityRepository.class
+it\data\jpa\domain\Hotel.class
+it\data\jpa\service\CitySearchCriteria.class
+it\data\jpa\SampleDataRestApplication.class
